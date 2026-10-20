@@ -1,0 +1,575 @@
+@import "tailwindcss";
+
+/* ── Awarely Visual Design System: Semantic Color Tokens ───────── */
+:root {
+  /* Semantic Tokens (Dark Mode Default) */
+  --background: #070F1E;
+  --surface: #0B192C;
+  --surface-elevated: #122338;
+  --surface-muted: #1A2F4C;
+  --foreground: #F8FAFC;
+  --foreground-secondary: #94A3B8;
+  --foreground-muted: #64748B;
+  --border: #1E3550;
+  --border-strong: #2E4D71;
+  --primary: var(--color-accent, #EB5E28);
+  --primary-hover: var(--color-accent-hover, #D94E1B);
+  --primary-foreground: #FFFFFF;
+  --secondary: #122338;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --info: #38BDF8;
+  --focus-ring: var(--focus-ring-color, var(--color-accent, #EB5E28));
+  --hero-background: linear-gradient(135deg, #0B192C 0%, #122338 50%, #0A1828 100%);
+  --hero-foreground: #FFFFFF;
+  --hero-muted: #CBD5E1;
+  --input-background: #0B192C;
+  --input-foreground: #F8FAFC;
+  --input-placeholder: #64748B;
+
+  /* Legacy brand token aliases for backward compatibility */
+  --brand-navy-darkest: #050B14;
+  --brand-navy-dark: #0B192C;
+  --brand-navy-surface: #122338;
+  --brand-navy-border: #1E3550;
+  --brand-navy-hover: #1A324E;
+  --brand-orange: #EB5E28;
+  --brand-orange-hover: #D94E1B;
+  --brand-orange-muted: rgba(235, 94, 40, 0.14);
+  --brand-orange-border: rgba(235, 94, 40, 0.35);
+
+  --surface-white: #FFFFFF;
+  --surface-light: #F8FAFC;
+  --surface-light-card: #FFFFFF;
+  --surface-light-border: #E2E8F0;
+  --surface-light-muted: #64748B;
+  --surface-light-text: #0B192C;
+  --surface-text-primary: #F8FAFC;
+  --surface-text-secondary: #94A3B8;
+
+  --safety-concern: #EF4444;
+  --safety-caution: #F59E0B;
+  --safety-positive: #10B981;
+  --safety-neutral: #64748B;
+
+  --focus-ring-color: #EB5E28;
+  --color-accent: #EB5E28;
+  --color-accent-hover: #D94E1B;
+  --color-accent-muted: rgba(235, 94, 40, 0.15);
+  --color-accent-border: rgba(235, 94, 40, 0.4);
+}
+
+/* ── Light Mode Definition ──────────────────────────────────────── */
+html.light,
+html[data-theme="light"] {
+  --background: #F8FAFC;
+  --surface: #FFFFFF;
+  --surface-elevated: #FFFFFF;
+  --surface-muted: #F1F5F9;
+  --foreground: #0F172A;
+  --foreground-secondary: #334155;
+  --foreground-muted: #64748B;
+  --border: #E2E8F0;
+  --border-strong: #CBD5E1;
+  --primary: var(--color-accent, #EB5E28);
+  --primary-hover: var(--color-accent-hover, #D94E1B);
+  --primary-foreground: #FFFFFF;
+  --secondary: #F1F5F9;
+  --success: #059669;
+  --warning: #D97706;
+  --danger: #DC2626;
+  --info: #0284C7;
+  --focus-ring: var(--focus-ring-color, var(--color-accent, #EB5E28));
+  --hero-background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 55%, #F1F5F9 100%);
+  --hero-foreground: #0F172A;
+  --hero-muted: #475569;
+  --input-background: #FFFFFF;
+  --input-foreground: #0F172A;
+  --input-placeholder: #94A3B8;
+
+  --brand-navy-darkest: #F8FAFC;
+  --brand-navy-dark: #FFFFFF;
+  --brand-navy-surface: #FFFFFF;
+  --brand-navy-border: #E2E8F0;
+  --brand-navy-hover: #F1F5F9;
+  --surface-text-primary: #0F172A;
+  --surface-text-secondary: #334155;
+  color-scheme: light;
+}
+
+/* ── Dark Mode Definition ───────────────────────────────────────── */
+html.dark,
+html[data-theme="dark"] {
+  --background: #070F1E;
+  --surface: #0B192C;
+  --surface-elevated: #122338;
+  --surface-muted: #1A2F4C;
+  --foreground: #F8FAFC;
+  --foreground-secondary: #94A3B8;
+  --foreground-muted: #64748B;
+  --border: #1E3550;
+  --border-strong: #2E4D71;
+  --primary: var(--color-accent, #EB5E28);
+  --primary-hover: var(--color-accent-hover, #D94E1B);
+  --primary-foreground: #FFFFFF;
+  --secondary: #122338;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --info: #38BDF8;
+  --focus-ring: var(--focus-ring-color, var(--color-accent, #EB5E28));
+  --hero-background: linear-gradient(135deg, #0B192C 0%, #122338 50%, #0A1828 100%);
+  --hero-foreground: #FFFFFF;
+  --hero-muted: #CBD5E1;
+  --input-background: #0B192C;
+  --input-foreground: #F8FAFC;
+  --input-placeholder: #64748B;
+
+  --brand-navy-darkest: #050B14;
+  --brand-navy-dark: #0B192C;
+  --brand-navy-surface: #122338;
+  --brand-navy-border: #1E3550;
+  --brand-navy-hover: #1A324E;
+  --surface-text-primary: #F8FAFC;
+  --surface-text-secondary: #94A3B8;
+  color-scheme: dark;
+}
+
+/* ── Dynamic Palette Color Mappings Across the Application ──────── */
+.bg-\[\#EB5E28\],
+[class*="bg-[#EB5E28]"],
+.bg-brand-orange,
+.bg-orange-600 {
+  background-color: var(--color-accent, var(--brand-orange)) !important;
+}
+
+.hover\:bg-\[\#D94E1B\]:hover,
+[class*="hover:bg-[#D94E1B]"]:hover,
+.hover\:bg-brand-orange-hover:hover,
+.hover\:bg-orange-600:hover {
+  background-color: var(--color-accent-hover, var(--brand-orange-hover)) !important;
+}
+
+.text-\[\#EB5E28\],
+[class*="text-[#EB5E28]"],
+.text-brand-orange,
+.text-orange-500 {
+  color: var(--color-accent, var(--brand-orange)) !important;
+}
+
+.border-\[\#EB5E28\],
+[class*="border-[#EB5E28]"],
+.border-brand-orange,
+.border-orange-500 {
+  border-color: var(--color-accent, var(--brand-orange)) !important;
+}
+
+[class*="focus-visible:ring-[#EB5E28]"],
+[class*="focus-visible:ring-orange-500"],
+[class*="focus:ring-orange-500"],
+[class*="focus-within:ring-orange-500"] {
+  --tw-ring-color: var(--focus-ring, #EB5E28) !important;
+}
+
+/* ── Comprehensive Light Mode Real Application Overrides ─────────── */
+html.light body,
+html[data-theme="light"] body {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+/* Background canvas and base layout containers */
+html.light .bg-\[\#070F1E\],
+html.light .bg-\[\#050B14\],
+html.light .bg-slate-950,
+html[data-theme="light"] .bg-\[\#070F1E\],
+html[data-theme="light"] .bg-\[\#050B14\],
+html[data-theme="light"] .bg-slate-950 {
+  background-color: var(--background) !important;
+}
+
+/* Header, sidebar, and primary surface containers */
+html.light .bg-\[\#0B192C\],
+html.light .bg-\[\#0B192C\]\/95,
+html.light .bg-\[\#0B192C\]\/90,
+html.light .bg-\[\#0B192C\]\/80,
+html.light .bg-\[\#0B192C\]\/60,
+html.light .bg-\[\#0B192C\]\/50,
+html.light .bg-slate-900,
+html.light .bg-slate-900\/90,
+html.light .bg-slate-900\/80,
+html[data-theme="light"] .bg-\[\#0B192C\],
+html[data-theme="light"] .bg-slate-900 {
+  background-color: var(--surface) !important;
+}
+
+/* Card and elevated interactive surfaces */
+html.light .bg-\[\#122338\],
+html.light .bg-\[\#122338\]\/90,
+html.light .bg-\[\#122338\]\/80,
+html.light .bg-\[\#122338\]\/60,
+html.light .bg-\[\#122338\]\/40,
+html.light .bg-slate-800,
+html.light .bg-slate-800\/80,
+html.light .bg-slate-800\/60,
+html.light .glass-navy,
+html[data-theme="light"] .bg-\[\#122338\],
+html[data-theme="light"] .glass-navy {
+  background-color: var(--surface-elevated) !important;
+  border-color: var(--border) !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Hover surfaces in Light Mode */
+html.light .hover\:bg-\[\#122338\]\/60:hover,
+html.light .hover\:bg-\[\#1A324E\]:hover,
+html.light .hover\:bg-\[\#122338\]:hover,
+html.light .hover\:bg-slate-800\/60:hover,
+html.light .hover\:bg-slate-700:hover,
+html[data-theme="light"] .hover\:bg-\[\#122338\]\/60:hover,
+html[data-theme="light"] .hover\:bg-\[\#1A324E\]:hover {
+  background-color: var(--surface-muted) !important;
+}
+
+/* Borders in Light Mode */
+html.light .border-\[\#1E3550\],
+html.light .border-slate-800,
+html.light .border-slate-700,
+html.light .border-slate-800\/80,
+html.light .border-slate-700\/40,
+html.light .border-white\/10,
+html.light .border-white\/20,
+html[data-theme="light"] .border-\[\#1E3550\],
+html[data-theme="light"] .border-slate-800 {
+  border-color: var(--border) !important;
+}
+
+/* Text readability in light mode */
+html.light .text-white,
+html[data-theme="light"] .text-white {
+  color: var(--foreground) !important;
+}
+
+html.light .text-slate-100,
+html.light .text-slate-200,
+html[data-theme="light"] .text-slate-100,
+html[data-theme="light"] .text-slate-200 {
+  color: var(--foreground) !important;
+}
+
+html.light .text-slate-300,
+html[data-theme="light"] .text-slate-300 {
+  color: var(--foreground-secondary) !important;
+}
+
+html.light .text-slate-400,
+html.light .text-slate-500,
+html[data-theme="light"] .text-slate-400 {
+  color: var(--foreground-muted) !important;
+}
+
+/* ── CONTRAST GUARDS: Elements that must KEEP crisp white text ───── */
+html.light button.bg-\[\#EB5E28\],
+html.light button[class*="bg-[#EB5E28]"],
+html.light button[class*="bg-brand-orange"],
+html.light button[class*="bg-orange-"],
+html.light button[class*="bg-rose-"],
+html.light button[class*="bg-emerald-600"],
+html.light button[class*="bg-teal-600"],
+html.light button.bg-teal-500,
+html.light a[class*="bg-[#EB5E28]"],
+html.light a[class*="bg-rose-"],
+html.light button.bg-rose-600,
+html.light [class*="bg-[#EB5E28]"] .text-white,
+html.light [class*="bg-rose-600"] .text-white,
+html.light [class*="bg-rose-500"] .text-white,
+html.light [class*="bg-emerald-600"] .text-white,
+html.light [class*="bg-teal-600"] .text-white,
+html.light .awarely-logo-badge,
+html.light .awarely-logo-badge *,
+html.light .btn-primary,
+html.light .btn-primary *,
+html[data-theme="light"] button.bg-\[\#EB5E28\],
+html[data-theme="light"] button[class*="bg-[#EB5E28]"],
+html[data-theme="light"] [class*="bg-[#EB5E28]"] .text-white {
+  color: #FFFFFF !important;
+}
+
+/* High-contrast accessible text for status badges in Light Mode */
+html.light .text-teal-300,
+html[data-theme="light"] .text-teal-300 {
+  color: #0F766E !important; /* Teal 700 - WCAG AAA */
+}
+html.light .text-amber-300,
+html[data-theme="light"] .text-amber-300 {
+  color: #B45309 !important; /* Amber 700 - WCAG AAA */
+}
+html.light .text-amber-200,
+html[data-theme="light"] .text-amber-200 {
+  color: #92400E !important; /* Amber 800 - WCAG AAA */
+}
+html.light .text-rose-300,
+html[data-theme="light"] .text-rose-300 {
+  color: #B91C1C !important; /* Rose 700 - WCAG AAA */
+}
+html.light .text-rose-200,
+html[data-theme="light"] .text-rose-200 {
+  color: #991B1B !important; /* Rose 800 - WCAG AAA */
+}
+html.light .text-emerald-300,
+html[data-theme="light"] .text-emerald-300 {
+  color: #047857 !important; /* Emerald 700 - WCAG AAA */
+}
+html.light .text-indigo-300,
+html[data-theme="light"] .text-indigo-300 {
+  color: #4338CA !important; /* Indigo 700 - WCAG AAA */
+}
+html.light .text-purple-300,
+html[data-theme="light"] .text-purple-300 {
+  color: #6D28D9 !important; /* Purple 700 - WCAG AAA */
+}
+
+/* Inputs, textareas, selects in Light Mode */
+html.light input,
+html.light textarea,
+html.light select,
+html[data-theme="light"] input,
+html[data-theme="light"] textarea,
+html[data-theme="light"] select {
+  background-color: var(--input-background) !important;
+  color: var(--input-foreground) !important;
+  border-color: var(--border-strong) !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder,
+html[data-theme="light"] input::placeholder {
+  color: var(--input-placeholder) !important;
+}
+
+/* Awarely Logo Shield Protection - preserves contrast-safe dark navy surface in all modes */
+.awarely-logo-badge {
+  background-color: #0B192C !important;
+  border-color: #1E3550 !important;
+}
+
+/* ── Hero Banner Utilities ───────────────────────────────────────── */
+.hero-banner {
+  background: var(--hero-background) !important;
+  border-color: var(--border) !important;
+}
+.hero-banner h1,
+.hero-banner .hero-title {
+  color: var(--hero-foreground) !important;
+}
+.hero-banner p,
+.hero-banner .hero-description {
+  color: var(--hero-muted) !important;
+}
+
+/* Base Styles */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  /* Accessibility: Accessible visible focus rings */
+  :focus-visible {
+    outline: 2px solid #EB5E28;
+    outline: 2px solid var(--focus-ring, #EB5E28) !important;
+    outline-offset: 2px !important;
+  }
+
+  button, [role="button"], a, input, select, textarea {
+    touch-action: manipulation;
+  }
+}
+
+@layer utilities {
+  /* Semantic surface utilities */
+  .bg-app { background-color: var(--background); }
+  .bg-surface { background-color: var(--surface); }
+  .bg-surface-elevated { background-color: var(--surface-elevated); }
+  .bg-surface-muted { background-color: var(--surface-muted); }
+  .text-foreground { color: var(--foreground); }
+  .text-foreground-secondary { color: var(--foreground-secondary); }
+  .text-foreground-muted { color: var(--foreground-muted); }
+  .border-app { border-color: var(--border); }
+  .border-app-strong { border-color: var(--border-strong); }
+
+  /* Brand Accents */
+  .text-brand-orange { color: var(--primary); }
+  .bg-brand-orange { background-color: var(--primary); }
+  .hover\:bg-brand-orange-hover:hover { background-color: var(--primary-hover); }
+  .border-brand-orange { border-color: var(--primary); }
+
+  /* Glassmorphism tuned to dark and light modes */
+  .glass-navy {
+    background: rgba(18, 35, 56, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-light {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid #E2E8F0;
+    color: #0F172A;
+  }
+
+  /* Ambient animations */
+  .animate-blob {
+    animation: blob 12s infinite ease-in-out;
+  }
+  .animation-delay-2000 { animation-delay: 2s; }
+  .animation-delay-4000 { animation-delay: 4s; }
+
+  /* Screen reader only utility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+}
+
+/* Keyframes */
+@keyframes blob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(25px, -35px) scale(1.06); }
+  66%       { transform: translate(-20px, 15px) scale(0.94); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+
+/* ── Accessibility: Reduced Motion Override ─────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-blob {
+    animation: none !important;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.35);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.6);
+}
+
+/* ── Leaflet Awarely Cartography Styling ─────────────────────────── */
+.awarely-map-container .leaflet-container {
+  background-color: #070F1E;
+  font-family: inherit;
+}
+
+/* Dark mode tile filter for standard OpenStreetMap tiles */
+.awarely-map-container.dark-tiles .leaflet-tile-pane {
+  filter: brightness(0.6) invert(1) contrast(2.8) hue-rotate(200deg) saturate(0.35) brightness(0.72);
+}
+
+/* Leaflet Attribution control styling */
+.awarely-map-container .leaflet-control-attribution {
+  background: rgba(11, 25, 44, 0.85) !important;
+  color: #94A3B8 !important;
+  padding: 3px 10px !important;
+  border-radius: 6px 0 0 0;
+  border-top: 1px solid #1E3550;
+  border-left: 1px solid #1E3550;
+  font-size: 11px !important;
+  backdrop-filter: blur(8px);
+}
+.awarely-map-container .leaflet-control-attribution a {
+  color: #2DD4BF !important;
+  text-decoration: none;
+}
+.awarely-map-container .leaflet-control-attribution a:hover {
+  text-decoration: underline;
+}
+
+/* Custom Leaflet popup styling matching Awarely Design System */
+.awarely-map-container .leaflet-popup-content-wrapper {
+  background: #0B192C;
+  color: #F8FAFC;
+  border: 1px solid #1E3550;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6);
+  padding: 4px;
+}
+.awarely-map-container .leaflet-popup-tip {
+  background: #0B192C;
+  border: 1px solid #1E3550;
+}
+.awarely-map-container .leaflet-popup-close-button {
+  color: #94A3B8 !important;
+  padding: 6px !important;
+}
+
+/* Custom Pulsing User Location Marker */
+.user-location-pulse {
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+.user-location-pulse .pulse-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid #2DD4BF;
+  background-color: rgba(45, 212, 191, 0.25);
+  animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+.user-location-pulse .pulse-dot {
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background-color: #2DD4BF;
+  box-shadow: 0 0 10px #2DD4BF;
+}
+@keyframes pulse-ring {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(1.8); opacity: 0; }
+}

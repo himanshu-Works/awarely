@@ -1,0 +1,60 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isAuthenticated() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.role == 'admin' ||
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    function isValidImage() {
+      return request.resource.size < 5 * 1024 * 1024 // 5MB maximum upload limit
+        && request.resource.contentType.matches('image/(jpeg|jpg|png|webp)')
+        // Explicitly reject SVG and HTML uploads to eliminate stored XSS vectors
+        && !request.resource.contentType.matches('.*svg.*')
+        && !request.resource.contentType.matches('.*html.*');
+    }
+
+    // ── REPORT PHOTOS: reportPhotos/{uid}/{filename} ──────────────
+    match /reportPhotos/{uid}/{filename} {
+      // Authenticated users can view contextual report imagery
+      allow read: if isAuthenticated();
+
+      // Strict upload restriction:
+      // 1. Must be authenticated
+      // 2. Can ONLY upload to their own user-scoped directory
+      // 3. Must be an image (JPEG, PNG, WebP) under 5MB
+      allow create: if isOwner(uid) && isValidImage();
+
+      // Existing photos cannot be overwritten in-place
+      allow update: if false;
+
+      // Deletion allowed by original uploader or system administrator
+      allow delete: if isOwner(uid) || isAdmin();
+    }
+
+    // ── USER AVATARS: userAvatars/{uid}/{filename} ────────────────
+    match /userAvatars/{uid}/{filename} {
+      allow read: if true;
+      allow write: if isOwner(uid) && isValidImage();
+      allow delete: if isOwner(uid) || isAdmin();
+    }
+
+    // ── DEFAULT DENY: Reject all other storage paths ──────────────
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

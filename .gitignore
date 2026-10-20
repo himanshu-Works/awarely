@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+dist/
+dist-ssr/
+*.local
+*.tsbuildinfo
+
+# Environment files — NEVER commit these
+.env
+.env.local
+.env.*.local
+
+# Firebase local config (contains real project data)
+.firebaserc
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Editor directories
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Cloud Functions
+functions/node_modules/
+functions/lib/
+functions/.env
+functions/.env.local
+
+# Firebase emulator data
+.firebase/
+firebase-debug.log
+firestore-debug.log
+functions-debug.log

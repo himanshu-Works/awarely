@@ -1,0 +1,149 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── HELPER FUNCTIONS ─────────────────────────────────────────────
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isAuthenticated() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.role == 'admin' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    function isDev() {
+      return isAuthenticated() && (
+        request.auth.token.role == 'dev' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'dev' ||
+        isAdmin()
+      );
+    }
+
+    // ── USERS: users/{uid} ──────────────────────────────────────────
+    match /users/{uid} {
+      // 1. Users can read their own private profile; admins can audit all profiles
+      allow read: if isOwner(uid) || isAdmin();
+
+      // 2. Users cannot modify another user's profile
+      // Privilege escalation guard: users CANNOT self-assign 'role'
+      allow create: if isOwner(uid) &&
+        (!request.resource.data.keys().hasAny(['role']) || request.resource.data.role == 'user');
+
+      allow update: if isOwner(uid) &&
+        (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']) || isAdmin());
+
+      allow delete: if isAdmin();
+
+      // 7. Scoped trusted contacts: users/{uid}/trustedContacts/{contactId}
+      // Strictly private: only the owner can read or write
+      match /trustedContacts/{contactId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // Scoped alert history: users/{uid}/alertHistory/{alertId}
+      match /alertHistory/{alertId} {
+        allow read: if isOwner(uid);
+        allow write: if isOwner(uid) || isAdmin();
+      }
+    }
+
+    // ── AREAS: areas/{areaId} ──────────────────────────────────────
+    match /areas/{areaId} {
+      // Public read: any client (even anonymous) can read area safety context
+      allow read: if true;
+
+      // 3. CLIENT WRITE PROTECTION ON COMPUTED SAFETY SCORES:
+      // The client is strictly FORBIDDEN from creating or updating computed scores:
+      // overallScore, timeScores, confidence, reportCount, awarenessLevel.
+      // These are mutated exclusively by server-side Cloud Functions or Admin SDK.
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ── AREA SUMMARIES: areaSummaries/{areaId} ─────────────────────
+    match /areaSummaries/{areaId} {
+      // Public read for AI contextual awareness
+      allow read: if true;
+
+      // 4. Written ONLY by Gemini AI generation Cloud Function / Admin SDK
+      // Ordinary users cannot directly alter or fabricate AI summaries
+      allow write: if isAdmin();
+    }
+
+    // ── REPORTS: reports/{reportId} ────────────────────────────────
+    match /reports/{reportId} {
+      // 9. Authenticated users can read reports for community context
+      allow read: if isAuthenticated();
+
+      // Report creation validation & integrity checks:
+      // - Must be authenticated
+      // - Must have valid areaId
+      // - Rating must be 1 to 5
+      // - moderationStatus MUST be 'pending' (client cannot self-approve)
+      // - weight MUST be 1.0 (client cannot artificially inflate influence)
+      // - Note character limit <= 280 chars
+      // - Max 10 tags
+      // - Cannot inject computed scores
+      allow create: if isAuthenticated() &&
+        request.resource.data.areaId is string &&
+        request.resource.data.areaId.size() > 0 &&
+        request.resource.data.rating is int &&
+        request.resource.data.rating >= 1 &&
+        request.resource.data.rating <= 5 &&
+        request.resource.data.moderationStatus == 'pending' &&
+        request.resource.data.weight == 1.0 &&
+        (!('note' in request.resource.data) || request.resource.data.note == null || request.resource.data.note.size() <= 280) &&
+        (!('tags' in request.resource.data) || request.resource.data.tags == null || request.resource.data.tags.size() <= 10) &&
+        !request.resource.data.keys().hasAny(['overallScore', 'confidence', 'isVerified']);
+
+      // Modifying or deleting reports is admin-only
+      allow update, delete: if isAdmin();
+    }
+
+    // ── SAFETY EVENTS: safetyEvents/{eventId} ──────────────────────
+    match /safetyEvents/{eventId} {
+      // 8. Event owner or admin can read; other users have ZERO access
+      allow read: if isAuthenticated() && (
+        resource.data.uid == request.auth.uid || isAdmin()
+      );
+
+      // Authenticated user can trigger a safety event with their own uid
+      // STRICT PRIVACY: no continuous tracks, no routes, no GPS breadcrumbs
+      allow create: if isAuthenticated() &&
+        request.resource.data.uid == request.auth.uid &&
+        !request.resource.data.keys().hasAny(['route', 'locationHistory', 'exactCoordinates', 'gpsTrail']);
+
+      // Event owner can update resolution reason
+      allow update: if isAuthenticated() && resource.data.uid == request.auth.uid;
+      allow delete: if isAdmin();
+    }
+
+    // ── ADMIN AUDIT LOGS: adminAuditLogs/{logId} ──────────────────
+    match /adminAuditLogs/{logId} {
+      // 5. Users cannot access admin-only data: strictly admin readable and writable
+      allow read, write: if isAdmin();
+    }
+
+    // ── EXPLICIT DENY FOR ROUTE / TRACKING COLLECTIONS ──────────────
+    // Continuous location tracking, GPS trails, and route collections are strictly blocked
+    match /routes/{document=**} {
+      allow read, write: if false;
+    }
+    match /locationHistory/{document=**} {
+      allow read, write: if false;
+    }
+    match /gpsTrails/{document=**} {
+      allow read, write: if false;
+    }
+    match /userLocations/{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
